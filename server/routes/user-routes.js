@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const _ = require('underscore'); //se llama _ como un estandar pero puede tener cualquier name
 
 const User = require('../models/user');
 
@@ -37,8 +38,21 @@ server.post('/users', (req, res) => {
 
 server.put('/users/:id', (req, res) => {
 	let id = req.params.id;
-	res.json({
-		id,
+	let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'status']);
+
+	User.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, dataBaseUser) => {
+		if (err) {
+			return res.status(400).json({
+				ok: false,
+				status: 'bad request',
+				err,
+			});
+		}
+
+		res.json({
+			ok: true,
+			dataBaseUser,
+		});
 	});
 });
 
