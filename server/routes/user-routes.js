@@ -7,7 +7,30 @@ const User = require('../models/user');
 const server = express();
 
 server.get('/users', (req, res) => {
-	res.json('get user');
+	let from = req.query.from || 0;
+	from = Number(from) - 1;
+
+	let limit = req.query.limit || 5;
+	limit = Number(limit);
+
+	User.find({})
+		.skip(from)
+		.limit(limit)
+		.exec((err, usersArray) => {
+			if (err) {
+				return res.status(400).json({
+					ok: false,
+					description: 'UPS falla en el GET',
+					err,
+				});
+			}
+
+			res.json({
+				ok: true,
+				status: 'oka',
+				usersArray,
+			});
+		});
 });
 
 server.post('/users', (req, res) => {
