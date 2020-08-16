@@ -82,8 +82,33 @@ server.put('/users/:id', (req, res) => {
 	});
 });
 
-server.delete('/users', (req, resp) => {
-	resp.json('INhabilitar usuarios');
+server.delete('/users/:id', (req, res) => {
+	let id = req.params.id;
+
+	User.findByIdAndRemove(id, (error, deletedUser) => {
+		if (error) {
+			return res.status(400).json({
+				ok: false,
+				message: 'Error en delete method',
+				error,
+			});
+		}
+
+		if (!deletedUser) {
+			return res.status(400).json({
+				ok: false,
+				error: {
+					message: 'Usuario no encontrado jaja',
+				},
+			});
+		}
+
+		res.json({
+			status: true,
+			message: 'OK no problem, usuario inhabilitado',
+			deletedUser,
+		});
+	});
 });
 
 module.exports = server;
