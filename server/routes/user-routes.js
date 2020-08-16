@@ -13,7 +13,7 @@ server.get('/users', (req, res) => {
 	let limit = req.query.limit || 5;
 	limit = Number(limit);
 
-	User.find({})
+	User.find({}, 'name email role status google img')
 		.skip(from)
 		.limit(limit)
 		.exec((err, usersArray) => {
@@ -25,10 +25,13 @@ server.get('/users', (req, res) => {
 				});
 			}
 
-			res.json({
-				ok: true,
-				status: 'oka',
-				usersArray,
+			User.count({}, (err, counter) => {
+				res.json({
+					ok: true,
+					status: 'oka',
+					usersArray,
+					cantidad: counter,
+				});
 			});
 		});
 });
