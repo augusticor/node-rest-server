@@ -7,13 +7,13 @@ const User = require('../models/user');
 const server = express();
 
 server.get('/users', (req, res) => {
-	let from = req.query.from || 0;
+	let from = req.query.from || 1;
 	from = Number(from) - 1;
 
 	let limit = req.query.limit || 5;
 	limit = Number(limit);
 
-	User.find({}, 'name email role status google img')
+	User.find({ status: true }, 'name email role status google img')
 		.skip(from)
 		.limit(limit)
 		.exec((err, usersArray) => {
@@ -25,7 +25,7 @@ server.get('/users', (req, res) => {
 				});
 			}
 
-			User.count({}, (err, counter) => {
+			User.countDocuments({ status: true }, (err, counter) => {
 				res.json({
 					ok: true,
 					status: 'oka',

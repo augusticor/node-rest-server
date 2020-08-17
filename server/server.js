@@ -17,7 +17,7 @@ server.use(bodyParser.json());
 server.use(require('./routes/user-routes'));
 
 // DataBase Connection
-mongoose.connect('mongodb://localhost:27017/cafe', (error, resp) => {
+mongoose.connect(process.env.URL_DB, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }, (error, resp) => {
 	if (error) throw error;
 	console.log('Base de datos online !');
 });
